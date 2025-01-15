@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import '../style.css'; 
 
 const StartPage = () => {
   const [countries, setCountries] = useState([]);
@@ -41,7 +42,7 @@ const StartPage = () => {
   };
 
   return (
-    <div>
+    <div className="container">
       <h2>Select a Country</h2>
       <select value={selectedCountry} onChange={handleCountryChange}>
         <option value="">-- Choose a Country --</option>

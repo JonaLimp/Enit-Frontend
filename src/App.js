@@ -1,12 +1,13 @@
+// App.js
 import React from 'react';
+import StartPage from './components/StartPage';  // Correctly import from components folder
 import Header from './components/Header';
-import StartPage from './components/StartPage';
 import Footer from './components/Footer';
-function App() {
+const App = () => {
   return (
     <div>
       <Header />
-      <StartPage />
+      <StartPage />  {/* Render the StartPage component */}
       <Footer />
     </div>
   );
