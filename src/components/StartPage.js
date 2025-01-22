@@ -1,69 +1,56 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../style.css'; 
 
-const StartPage = () => {
-  const [countries, setCountries] = useState([]);
-  const [selectedCountry, setSelectedCountry] = useState('');
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
 
+const StartPage = () => {
+  const [countries, setCountries] = useState([]); // Holds the list of countries
+  const [loading, setLoading] = useState(true); // Tracks loading state
+  const [selectedCountry, setSelectedCountry] = useState(''); // Tracks selected country
+  const navigate = useNavigate(); // Hook for navigation
+  
   useEffect(() => {
+    // Fetch countries from the backend
     axios
       .get('http://127.0.0.1:8000/environmental_data/api/countries/')
       .then((response) => {
-        setCountries(response.data);
-        setLoading(false);
+        setCountries(response.data); // Update countries state
       })
-      .catch((error) => {
-        console.error('Error fetching countries:', error);
-        setLoading(false);
+      .finally(() => {
+        setLoading(false); // Stop loading spinner
       });
-  }, []);
+  }, []); // Empty dependency array ensures this runs only once
 
-  useEffect(() => {
+  // Handle dropdown selection
+  const handleCountryChange = (e) => {
+    setSelectedCountry(e.target.value);
+  };
+
+  // Define the handleSubmit function
+  const handleSubmit = () => {
     if (selectedCountry) {
-      setLoading(true);
-      axios
-        .get(`http://127.0.0.1:8000/environmental_data/api/historical-data/${selectedCountry}/`)
-        .then((response) => {
-          setData(response.data);
-          setLoading(false);
-        })
-        .catch((error) => {
-          console.error('Error fetching data:', error);
-          setLoading(false);
-        });
+      navigate(`/environmental-data/${selectedCountry}`); // Navigate to the environmental data page
+    } else {
+      console.error('No country selected');
     }
-  }, [selectedCountry]);
-
-  const handleCountryChange = (event) => {
-    setSelectedCountry(event.target.value);
   };
 
   return (
-    <div className="container">
-      <h2>Select a Country</h2>
+    <div>
+      <h1>Select a Country</h1>
       <select value={selectedCountry} onChange={handleCountryChange}>
-        <option value="">-- Choose a Country --</option>
-        {countries.map((country) => (
-          <option key={country.code} value={country.code}>
+        <option value="">-- Select a Country --</option>
+        {countries.map((country, index) => (
+          <option key={index} value={country.name}>
             {country.name}
           </option>
         ))}
       </select>
-
-      {loading ? (
-        <p>Loading...</p>
-      ) : (
-        <ul>
-          {data.map((item, index) => (
-            <li key={index}>
-              {item.region.name} - {item.substance.name} ({item.year}): {item.value}
-            </li>
-          ))}
-        </ul>
-      )}
+      {selectedCountry && <p>You selected: {selectedCountry}</p>}
+      <button onClick={handleSubmit} disabled={!selectedCountry}>
+        View Environmental Data
+      </button>
     </div>
   );
 };
