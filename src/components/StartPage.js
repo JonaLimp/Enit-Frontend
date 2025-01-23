@@ -5,20 +5,20 @@ import '../style.css';
 
 
 const StartPage = () => {
-  const [countries, setCountries] = useState([]); // Holds the list of countries
-  const [loading, setLoading] = useState(true); // Tracks loading state
-  const [selectedCountry, setSelectedCountry] = useState(''); // Tracks selected country
-  const navigate = useNavigate(); // Hook for navigation
-  
+  const [countries, setCountries] = useState([]); 
+  const [loading, setLoading] = useState(true); 
+  const [selectedCountry, setSelectedCountry] = useState(''); 
+  const navigate = useNavigate(); 
+
   useEffect(() => {
     // Fetch countries from the backend
     axios
       .get('http://127.0.0.1:8000/environmental_data/api/countries/')
       .then((response) => {
-        setCountries(response.data); // Update countries state
+        setCountries(response.data);
       })
       .finally(() => {
-        setLoading(false); // Stop loading spinner
+        setLoading(false); 
       });
   }, []); // Empty dependency array ensures this runs only once
 
